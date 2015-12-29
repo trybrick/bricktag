@@ -743,6 +743,7 @@
       var $adUnit, allData, dimensions, iframe, self;
       self = this;
       $adUnit = dom(parentEl);
+      $adUnit.html('');
       allData = trakless.util.allData(parentEl);
       dimensions = self.getDimensions(allData) || [[300, 250]];
       iframe = doc.createElement('iframe');
