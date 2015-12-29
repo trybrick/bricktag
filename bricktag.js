@@ -535,7 +535,7 @@
      *
      */
 
-    Plugin.prototype.actionHandler = function(target, evt) {
+    Plugin.prototype.actionHandler = function(evt, target) {
       var allData, elem, i, k, len, payLoad, realk, self, v;
       self = myBrick.Advertising;
       elem = target;

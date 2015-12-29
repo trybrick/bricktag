@@ -357,7 +357,7 @@ class Plugin
   # handle a dom event
   #
   ###
-  actionHandler: (target, evt) ->
+  actionHandler: (evt, target) ->
     self = myBrick.Advertising
     elem = target
     payLoad = {}

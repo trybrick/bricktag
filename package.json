@@ -1,7 +1,7 @@
 {
   "name": "bricktag",
   "description": "Brick Tag Plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/trybrick/bricktag",
   "author": {
     "name": "Brick Inc",
@@ -42,6 +42,7 @@
     "duo-test": "*",
     "duo-coffee": "*"
   },
+  "license": "PRIVATE",
   "scripts": {
     "test": "gulp test"
   }
