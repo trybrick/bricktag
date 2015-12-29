@@ -12,9 +12,11 @@
         var testwin = window.top.bricktag;
         pwin = window.top;
     } catch (e) {};
-
-    var url = pwin.bricktag.getAnxUrl($(document).width(), $(document).height());
-    document.write(url);
+    try {
+      window.bricktag = document.bricktag = pwin.bricktag;
+      var url = window.bricktag.getAnxUrl($(document).width(), $(document).height());
+      document.write(url);
+    } catch (e) {};
   </script>
   </body>
 </html>

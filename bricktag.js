@@ -134,7 +134,7 @@
 
     Plugin.prototype.pluginLoaded = true;
 
-    Plugin.prototype.iframeContent = '<!DOCTYPE html><html> <head> <title>Brick Inc</title> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script> </head> <body> <script>var pwin=window.parent; try{var testwin=window.top.bricktag; pwin=window.top;}catch (e){}; var url=pwin.bricktag.getAnxUrl($(document).width(), $(document).height()); document.write(url); </script> </body></html>';
+    Plugin.prototype.iframeContent = '<!DOCTYPE html><html> <head> <title>Brick Inc</title> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script> </head> <body> <script>var pwin=window.parent; try{var testwin=window.top.bricktag; pwin=window.top;}catch (e){}; try{window.bricktag=document.bricktag=pwin.bricktag; var url=window.bricktag.getAnxUrl($(document).width(), $(document).height()); document.write(url);}catch (e){}; </script> </body></html>';
 
     Plugin.prototype.defP = {
       page: void 0,
@@ -748,12 +748,12 @@
       iframe = doc.createElement('iframe');
       iframe.className = 'brickframe';
       iframe.scrolling = 'no';
-      iframe.frameborder = 0;
+      iframe.frameBorder = 0;
       iframe.height = dimensions[0][1];
       iframe.width = dimensions[0][0];
-      iframe.marginwidth = 0;
-      iframe.marginheight = 0;
-      iframe.style.border = 'none';
+      iframe.marginWidth = 0;
+      iframe.marginHeight = 0;
+      iframe.style.borderStyle = 'none';
       parentEl.appendChild(iframe);
       if (iframe.contentWindow) {
         iframe.contentWindow.contents = self.iframeContent;
