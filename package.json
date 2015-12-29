@@ -1,0 +1,48 @@
+{
+  "name": "bricktag",
+  "description": "Brick Tag Plugin",
+  "version": "0.0.1",
+  "homepage": "https://github.com/trybrick/bricktag",
+  "author": {
+    "name": "Brick Inc",
+    "email": "tech@trybrick.com",
+    "url": "http://www.trybrick.com"
+  },
+  "contributors": [
+    {
+      "name": "Tom Nguyen",
+      "email": "tnguyen@trybrick.com",
+      "url": "http://www.trybrick.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:trybrick/bricktag.git"
+  },
+  "keywords": [
+    "advertising",
+    "appnexus"
+  ],
+  "main": [
+    "bricktag.js",
+    "bricktag.min.js"
+  ],
+  "directories": {
+    "example": "demo",
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "express": "*",
+    "coffee-script": "*",
+    "component": "*",
+    "component-coffee": "*",
+    "uglify-js": "*",
+    "duo": "*",
+    "duo-test": "*",
+    "duo-coffee": "*"
+  },
+  "scripts": {
+    "test": "gulp test"
+  }
+}
