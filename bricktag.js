@@ -742,8 +742,12 @@
     };
 
     Plugin.prototype.createIframe = function(parentEl) {
-      var $adUnit, allData, dimensions, iframe, self;
+      var $adUnit, allData, dimensions, iframe, networkId, self;
       self = this;
+      networkId = self.getNetworkId() + '';
+      if (networkId.length <= 0) {
+        return self;
+      }
       $adUnit = dom(parentEl);
       $adUnit.html('');
       allData = trakless.util.allData(parentEl);
