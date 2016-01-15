@@ -217,7 +217,7 @@
     Plugin.prototype.getNetworkId = function() {
       var networkId, self;
       self = this;
-      networkId = trakless2.session('anxTagId');
+      networkId = trakless2.util.session('anxTagId');
       return networkId;
     };
 
@@ -654,7 +654,7 @@
       }
       self = myBrick.Advertising;
       if (rsp) {
-        trakless2.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
+        trakless2.util.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
         return self.refreshAdPodsInternal(self.actionParam, true);
       }
     };

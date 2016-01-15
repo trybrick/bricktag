@@ -106,7 +106,7 @@ class Plugin
   ###
   getNetworkId: ()->
     self = @
-    networkId = trakless2.session('anxTagId')
+    networkId = trakless2.util.session('anxTagId')
     return networkId
 
   ###*
@@ -456,7 +456,7 @@ class Plugin
 
     self = myBrick.Advertising
     if rsp
-      trakless2.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
+      trakless2.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
       self.refreshAdPodsInternal(self.actionParam, true)
 
   ###*
