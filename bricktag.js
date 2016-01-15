@@ -91,7 +91,7 @@
 })({
 1: [function(require, module, exports) {
 (function() {
-  var Plugin, _tk, aPlugin, attrs, buildqs, debug, doc, dom, fn, gmodal2, gsnContext, i, j, k, lastRefreshTime, len, len1, loadScript, log, myBrick, myPlugin, oldGsnAdvertising, prefix, ref, ref1, script, trakless2, win;
+  var Plugin, _tk, aPlugin, attrs, buildqs, configUrl, debug, doc, dom, fn, formatDate, gmodal2, gsnContext, i, j, k, lastRefreshTime, len, len1, loadScript, log, myBrick, myPlugin, oldGsnAdvertising, prefix, ref, ref1, script, trakless2, win;
 
   debug = require('debug');
 
@@ -130,6 +130,26 @@
       return;
     }
   }
+
+  formatDate = function(date) {
+    var d, day, month, year;
+    d = new Date();
+    if (date) {
+      d = new Date(date);
+    }
+    month = '' + d.getMonth() + 1;
+    day = '' + d.getDate();
+    year = d.getFullYear();
+    if (month.length < 2) {
+      month = '0' + month;
+    }
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+    return [year, month, day].join('');
+  };
+
+  configUrl = "https://feed.gsngrocers.com/clientconfig?cb=" + (formatDate()) + "$select=appNexusPlacementTagId&sid=";
 
   Plugin = (function() {
     function Plugin() {}
@@ -191,9 +211,9 @@
 
     Plugin.prototype.selector = 'body';
 
-    Plugin.prototype.apiUrl = 'https://clientapi.gsn2.com/api/v1';
+    Plugin.prototype.apiUrl = 'https://clientapi.gsngrocers.com/api/v1';
 
-    Plugin.prototype.configUrl = 'https://feed.gsngrocers.com/clientconfig?$select=appNexusPlacementTagId&sid=';
+    Plugin.prototype.configUrl = configUrl;
 
     Plugin.prototype.anxTagId = void 0;
 

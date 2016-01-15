@@ -21,6 +21,27 @@ if oldGsnAdvertising?
   if oldGsnAdvertising.pluginLoaded
     return
 
+formatDate = (date) ->
+  d = new Date()
+  if (date)
+    d = new Date(date)
+
+  month = '' + d.getMonth() + 1
+  day = '' + d.getDate()
+  year = d.getFullYear()
+
+  if month.length < 2
+    month = '0' + month
+  if day.length < 2
+    day = '0' + day
+  [
+    year
+    month
+    day
+  ].join ''
+
+configUrl = "https://feed.gsngrocers.com/clientconfig?cb=#{formatDate()}$select=appNexusPlacementTagId&sid="
+
 class Plugin
   pluginLoaded: true
   iframeContent: '<!DOCTYPE html><html> <head> <title>Brick Inc</title> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script> </head> <body> <script>var pwin=window.parent; try{var testwin=window.top.bricktag; pwin=window.top;}catch (e){}; try{window.bricktag=document.bricktag=pwin.bricktag; var url=window.bricktag.getAnxUrl($(document).width(), $(document).height()); document.write(url);}catch (e){}; </script> </body></html>'
@@ -90,8 +111,8 @@ class Plugin
   hasLoad: false
   brickid: 0
   selector: 'body'
-  apiUrl: 'https://clientapi.gsn2.com/api/v1'
-  configUrl: 'https://feed.gsngrocers.com/clientconfig?$select=appNexusPlacementTagId&sid='
+  apiUrl: 'https://clientapi.gsngrocers.com/api/v1'
+  configUrl: configUrl
   anxTagId: undefined
   onAllEvents: undefined
   oldGsnAdvertising: oldGsnAdvertising
