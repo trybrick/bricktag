@@ -2,6 +2,7 @@ debug = require('debug')
 log = debug('bricktag')
 trakless2 = require('trakless')
 loadScript = require('load-script')
+gmodal2 = require('gmodal')
 dom = require('dom')
 
 if console?
