@@ -193,7 +193,7 @@
 
     Plugin.prototype.apiUrl = 'https://clientapi.gsn2.com/api/v1';
 
-    Plugin.prototype.configUrl = 'https://brickapi.azurewebsites.net';
+    Plugin.prototype.configUrl = 'http://noogen.webscript.io/clientconfig?sid=';
 
     Plugin.prototype.anxTagId = void 0;
 
@@ -645,7 +645,7 @@
      */
 
     Plugin.prototype.configSuccess = function(svrRsp) {
-      var rsp, self;
+      var ref, rsp, self;
       win.brickConfigCallback = null;
       rsp = svrRsp;
       if (typeof svrRsp === 'string') {
@@ -653,7 +653,7 @@
       }
       self = myBrick.Advertising;
       if (rsp) {
-        self.anxTagId = rsp.appNexusPlacementTagId;
+        self.anxTagId = (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0;
         return self.refreshAdPodsInternal(self.actionParam, true);
       }
     };
@@ -671,12 +671,12 @@
         cb();
         return;
       }
-      url = self.configUrl + "/tables/ClientConfig/" + self.brickid;
+      url = "" + self.configUrl + self.brickid;
       dataType = 'json';
       win.brickConfigCallback = function(rsp) {
         return self.configSuccess(rsp);
       };
-      url += '?callback=brickConfigCallback';
+      url += '&callback=brickConfigCallback';
       loadScript(url);
       return self;
     };

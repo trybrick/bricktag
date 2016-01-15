@@ -91,7 +91,7 @@ class Plugin
   brickid: 0
   selector: 'body'
   apiUrl: 'https://clientapi.gsn2.com/api/v1'
-  configUrl: 'https://brickapi.azurewebsites.net'
+  configUrl: 'http://noogen.webscript.io/clientconfig?sid='
   anxTagId: undefined
   onAllEvents: undefined
   oldGsnAdvertising: oldGsnAdvertising
@@ -455,7 +455,7 @@ class Plugin
 
     self = myBrick.Advertising
     if rsp
-      self.anxTagId = rsp.appNexusPlacementTagId
+      self.anxTagId = rsp[0]?.appNexusPlacementTagId
       self.refreshAdPodsInternal(self.actionParam, true)
 
   ###*
@@ -468,7 +468,7 @@ class Plugin
       cb()
       return
 
-    url = "#{self.configUrl}/tables/ClientConfig/#{self.brickid}"
+    url = "#{self.configUrl}#{self.brickid}"
     dataType = 'json'
 
     # fallback to jsonp for IE lt 10
@@ -477,7 +477,7 @@ class Plugin
     win.brickConfigCallback = (rsp) ->
       self.configSuccess(rsp)
 
-    url += '?callback=brickConfigCallback'
+    url += '&callback=brickConfigCallback'
     loadScript(url)
     self
 
