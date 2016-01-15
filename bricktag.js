@@ -193,7 +193,7 @@
 
     Plugin.prototype.apiUrl = 'https://clientapi.gsn2.com/api/v1';
 
-    Plugin.prototype.configUrl = 'https://feed.gsngrocers.com/clientconfig?sid=';
+    Plugin.prototype.configUrl = 'https://feed.gsngrocers.com/clientconfig?$select=appNexusPlacementTagId&sid=';
 
     Plugin.prototype.anxTagId = void 0;
 
@@ -215,9 +215,10 @@
      */
 
     Plugin.prototype.getNetworkId = function() {
-      var self;
+      var networkId, self;
       self = this;
-      return self.anxTagId;
+      networkId = trakless2.session('anxTagId');
+      return networkId;
     };
 
 
@@ -653,7 +654,7 @@
       }
       self = myBrick.Advertising;
       if (rsp) {
-        self.anxTagId = (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0;
+        trakless2.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
         return self.refreshAdPodsInternal(self.actionParam, true);
       }
     };
@@ -667,7 +668,7 @@
     Plugin.prototype.getConfig = function(cb) {
       var dataType, self, url;
       self = this;
-      if (self.anxTagId) {
+      if (self.getNetworkId()) {
         cb();
         return;
       }
@@ -735,17 +736,17 @@
     };
 
     Plugin.prototype.getAnxUrl = function(width, height) {
-      var networkId, self, url;
+      var cb, networkId, self, url;
       self = this;
       networkId = self.getNetworkId();
-      return url = "<script src=\"http://ib.adnxs.com/ttj?id=" + networkId + "&size=" + width + "x" + height + "&cb=${CACHEBUSTER}\"></script>";
+      cb = (new Date()).getTime();
+      return url = "<script src=\"http://ib.adnxs.com/ttj?id=" + networkId + "&size=" + width + "x" + height + "&cb=" + cb + "\"></script>";
     };
 
     Plugin.prototype.createIframe = function(parentEl) {
-      var $adUnit, allData, dimensions, iframe, networkId, self;
+      var $adUnit, allData, dimensions, iframe, self;
       self = this;
-      networkId = self.getNetworkId() + '';
-      if (networkId.length <= 0) {
+      if (!self.getNetworkId()) {
         return self;
       }
       $adUnit = dom(parentEl);
@@ -796,57 +797,6 @@
         setTimeout(self.refreshWithTimer, timer);
       }
       return this;
-    };
-
-
-    /**
-     * get cookie name
-     * @param  {string} nameOfCookie cookie name
-     * @return {[type]}              [description]
-     */
-
-    Plugin.prototype.getCookie = function(nameOfCookie) {
-      var begin, cd, cookieData, end;
-      if (doc.cookie.length > 0) {
-        begin = doc.cookie.indexOf(nameOfCookie + '=');
-        end = 0;
-        if (begin !== -1) {
-          begin += nameOfCookie.length + 1;
-          end = doc.cookie.indexOf(';', begin);
-          if (end === -1) {
-            end = doc.cookie.length;
-          }
-          cookieData = decodeURI(doc.cookie.substring(begin, end));
-          if (cookieData.indexOf(',') > 0) {
-            cd = cookieData.split(',');
-            bricktag.gsnNetworkId = cd[0];
-          }
-          return cookieData;
-        }
-      }
-    };
-
-
-    /**
-     * set cookie value
-     * @param {string} nameOfCookie
-     * @param {Object} value
-     * @param {Number} expireHours
-     */
-
-    Plugin.prototype.setCookie = function(nameOfCookie, value, expireHours) {
-      var ed, edv, self, v;
-      self = this;
-      ed = new Date();
-      ed.setTime(ed.getTime() + (expireHours || 24) * 3600 * 1000);
-      v = encodeURI(value);
-      edv = ed.toGMTString();
-      if (bricktag.isDebug) {
-        doc.cookie = nameOfCookie + "=" + v + "; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/";
-      } else {
-        doc.cookie = nameOfCookie + "=" + v + "; expires=" + edv + "; path=/";
-      }
-      return self;
     };
 
 

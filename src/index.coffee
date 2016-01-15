@@ -91,7 +91,7 @@ class Plugin
   brickid: 0
   selector: 'body'
   apiUrl: 'https://clientapi.gsn2.com/api/v1'
-  configUrl: 'https://feed.gsngrocers.com/clientconfig?sid='
+  configUrl: 'https://feed.gsngrocers.com/clientconfig?$select=appNexusPlacementTagId&sid='
   anxTagId: undefined
   onAllEvents: undefined
   oldGsnAdvertising: oldGsnAdvertising
@@ -106,7 +106,8 @@ class Plugin
   ###
   getNetworkId: ()->
     self = @
-    return self.anxTagId
+    networkId = trakless2.session('anxTagId')
+    return networkId
 
   ###*
   # emit a brickevent
@@ -455,7 +456,7 @@ class Plugin
 
     self = myBrick.Advertising
     if rsp
-      self.anxTagId = rsp[0]?.appNexusPlacementTagId
+      trakless2.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
       self.refreshAdPodsInternal(self.actionParam, true)
 
   ###*
@@ -464,7 +465,7 @@ class Plugin
   ###
   getConfig: (cb) ->
     self = @
-    if self.anxTagId
+    if self.getNetworkId()
       cb()
       return
 
@@ -518,12 +519,12 @@ class Plugin
   getAnxUrl: (width, height) ->
     self = @
     networkId = self.getNetworkId()
-    url = "<script src=\"http://ib.adnxs.com/ttj?id=#{networkId}&size=#{width}x#{height}&cb=${CACHEBUSTER}\"></script>";
+    cb = (new Date()).getTime()
+    url = "<script src=\"http://ib.adnxs.com/ttj?id=#{networkId}&size=#{width}x#{height}&cb=#{cb}\"></script>";
 
   createIframe: (parentEl) ->
     self = @
-    networkId = self.getNetworkId() + '';
-    if (networkId.length <= 0)
+    if (!self.getNetworkId())
       return self
 
     $adUnit = dom(parentEl)
@@ -573,44 +574,6 @@ class Plugin
       setTimeout self.refreshWithTimer, timer
 
     @
-
-  ###*
-   * get cookie name
-   * @param  {string} nameOfCookie cookie name
-   * @return {[type]}              [description]
-  ###
-  getCookie: (nameOfCookie) ->
-    if doc.cookie.length > 0
-      begin = doc.cookie.indexOf(nameOfCookie + '=')
-      end = 0
-      if begin != -1
-        begin += nameOfCookie.length + 1
-        end = doc.cookie.indexOf(';', begin)
-        if end == -1
-          end = doc.cookie.length
-        cookieData = decodeURI(doc.cookie.substring(begin, end))
-        if (cookieData.indexOf(',') > 0)
-          cd = cookieData.split(',')
-          bricktag.gsnNetworkId = cd[0]
-        cookieData
-
-  ###*
-   * set cookie value
-   * @param {string} nameOfCookie
-   * @param {Object} value
-   * @param {Number} expireHours
-  ###
-  setCookie: (nameOfCookie, value, expireHours) ->
-    self = @
-    ed = new Date()
-    ed.setTime ed.getTime() + (expireHours or 24) * 3600 * 1000
-    v = encodeURI(value);
-    edv = ed.toGMTString();
-    if (bricktag.isDebug)
-      doc.cookie = "#{nameOfCookie}=#{v}; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/"
-    else
-      doc.cookie = "#{nameOfCookie}=#{v}; expires=#{edv}; path=/"
-    return self
 
   ###*
   # the onload method, document ready friendly
