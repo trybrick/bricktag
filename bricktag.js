@@ -193,7 +193,7 @@
 
     Plugin.prototype.apiUrl = 'https://clientapi.gsn2.com/api/v1';
 
-    Plugin.prototype.configUrl = 'http://noogen.webscript.io/clientconfig?sid=';
+    Plugin.prototype.configUrl = 'https://feed.gsngrocers.com/clientconfig?sid=';
 
     Plugin.prototype.anxTagId = void 0;
 

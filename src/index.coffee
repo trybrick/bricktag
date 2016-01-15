@@ -91,7 +91,7 @@ class Plugin
   brickid: 0
   selector: 'body'
   apiUrl: 'https://clientapi.gsn2.com/api/v1'
-  configUrl: 'http://noogen.webscript.io/clientconfig?sid='
+  configUrl: 'https://feed.gsngrocers.com/clientconfig?sid='
   anxTagId: undefined
   onAllEvents: undefined
   oldGsnAdvertising: oldGsnAdvertising
