@@ -522,6 +522,10 @@ class Plugin
 
   createIframe: (parentEl) ->
     self = @
+    networkId = self.getNetworkId() + '';
+    if (networkId.length <= 0)
+      return self
+
     $adUnit = dom(parentEl)
     $adUnit.html('')
     allData = trakless.util.allData(parentEl)
