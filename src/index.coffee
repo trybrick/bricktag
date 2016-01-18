@@ -1,7 +1,7 @@
 debug = require('debug')
 log = debug('bricktag')
 trakless2 = require('trakless')
-loadScript = require('load-script')
+loadScript = require('load-script-once')
 gmodal2 = require('gmodal')
 dom = require('dom')
 
@@ -40,11 +40,14 @@ formatDate = (date) ->
     day
   ].join ''
 
-configUrl = "https://feed.gsngrocers.com/clientconfig?cb=#{formatDate()}$select=appNexusPlacementTagId&sid="
+config = {
+  pixelUrl: "//pi.gsngrocers.com/pi.gif",
+  xstoreUrl: "//cdn.gsngrocers.com/script/xstore.html"
+}
 
 class Plugin
   pluginLoaded: true
-  iframeContent: '<!DOCTYPE html><html> <head> <title>Brick Inc</title> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script> </head> <body> <script>var pwin=window.parent; try{var testwin=window.top.bricktag; pwin=window.top;}catch (e){}; try{window.bricktag=document.bricktag=pwin.bricktag; var url=window.bricktag.getAnxUrl($(document).width(), $(document).height()); document.write(url);}catch (e){}; </script> </body></html>'
+  iframeContent: '<!DOCTYPE html><html> <head> <title></title> <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script> </head> <body> <script>var pwin=window.parent; try{var testwin=window.top.bricktag; pwin=window.top;}catch (e){}; try{var br=window.bricktag=document.bricktag=pwin.bricktag; var url=bt.getAnxUrl($(document).width(), $(document).height()); document.write(url);}catch (e){}; </script> <!--REPLACEME--></body></html>'
   defP:
     # default action parameters *optional* means it will not break but we would want it if possible
      # required - example: registration, coupon, circular
@@ -110,15 +113,14 @@ class Plugin
   isDebug: false
   hasLoad: false
   brickid: 0
-  selector: 'body'
-  apiUrl: 'https://clientapi.gsngrocers.com/api/v1'
-  configUrl: configUrl
   anxTagId: undefined
   onAllEvents: undefined
   oldGsnAdvertising: oldGsnAdvertising
   minSecondBetweenRefresh: 2
   timer: undefined
   depts: ''
+  configLoaded: false
+  scriptLoaded: false
 
   ###*
   # get network id
@@ -186,7 +188,7 @@ class Plugin
     @
 
   ###*
-  # loggingn data
+  # logging data
   #
   # @param {String} message - log message
   # @return {Object}
@@ -342,6 +344,7 @@ class Plugin
   clickLink: (click, url, target) ->
     if target == undefined or target == ''
       target = '_top'
+
     @ajaxFireUrl click
     @emit 'clickLink',
       myPlugin: this
@@ -360,21 +363,6 @@ class Plugin
       Name: name
       Value: value
     return
-
-  ###*
-  # set the brand for the session
-  #
-  ###
-  setBrand: (brandName) ->
-    trakless.util.session('bricktag:brand', brandName)
-    return
-
-  ###*
-  # get the brand currently in session
-  #
-  ###
-  getBrand: ->
-    trakless.util.session('bricktag:brand')
 
   ###*
   # handle a dom event
@@ -414,10 +402,7 @@ class Plugin
           parseInt(dimensionSet[1], 10)
         ]
     else
-      mapping = allData['sizes']
-      if mapping and self.dopts.sizeMapping[mapping]
-        for v, k in self.dopts.sizeMapping[mapping]
-          dimensions = dimensions.concat(v.ad_sizes)
+      dimensions = [[0,0]]
 
     return dimensions
 
@@ -440,27 +425,11 @@ class Plugin
     if (forceRefresh || canRefresh)
       lastRefreshTime = (new Date()).getTime() / 1000;
 
-      if (payLoad.dept?)
-        self.addDept payLoad.dept
-
-      targetting =
-        dept: self.depts.split(',').slice(1,5)
-        brand: self.getBrand()
-
-      if payLoad.page
-        targetting.kw = payLoad.page.replace(/[^a-z]/gi, '');
-
-      if (targetting.dept.length > 0)
-        self.depts = "," + targetting.dept.join(',')
-      else
-        targetting.dept = ['produce']
-
       # refreshing adpods
       adpods = dom('.brickunit')
 
       for adUnit, k in adpods
         self.createIframe(adUnit)
-
     @
 
   ###*
@@ -471,26 +440,57 @@ class Plugin
   configSuccess: (svrRsp) ->
     # remove handler for security reason
     win.brickConfigCallback = null
+
     rsp = svrRsp
     if (typeof svrRsp is 'string')
       rsp = JSON.parse(svrRsp)
 
     self = myBrick.Advertising
+    self.configLoaded = true
+
     if rsp
-      trakless2.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
+      _tk.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
+      _tk.util.session('brickTag', rsp[0])
+      self.ensureConfigLoaded()
       self.refreshAdPodsInternal(self.actionParam, true)
+
+  ###*
+   * make sure config script are loaded
+   * @return {Object}
+  ###
+  ensureScriptLoaded: () ->
+    if (!self.configLoaded or self.scriptLoaded)
+      return
+
+    self.scriptLoaded = true
+    cfg = _tk.util.session('brickTag')
+    if (cfg)
+      cfg = JSON.parse(cfg)
+    else
+      cfg = {}
+
+    btscript = cfg.brickTagScriptUrl + ""
+    cb = (new Date()).getTime()
+    # load additional script
+    if (btscript.indexOf('//') >= 0)
+      loadScript(btscript.replace('%%CACHEBUSTER%%', cb))
+
+    frameContent = cfg.brickTagFrameContent
+    if (frameContent)
+      self.iframeContent = self.iframeContent.replace("<!--REPLACEME-->", frameContent.replace('%%CACHEBUSTER%%', cb))
 
   ###*
    * config request method
    * @return {Object}
   ###
-  getConfig: (cb) ->
+  loadConfig: (cb) ->
     self = @
-    if self.getNetworkId()
+    if self.getNetworkId() or self.configLoaded
+      self.ensureScriptLoaded()
       cb()
       return
 
-    url = "#{self.configUrl}#{self.brickid}"
+    url = "//feed.gsngrocers.com/clientconfig?cb=#{formatDate()}&sid=#{self.brickid}&callback=brickConfigCallback"
     dataType = 'json'
 
     # fallback to jsonp for IE lt 10
@@ -499,7 +499,6 @@ class Plugin
     win.brickConfigCallback = (rsp) ->
       self.configSuccess(rsp)
 
-    url += '&callback=brickConfigCallback'
     loadScript(url)
     self
 
@@ -514,9 +513,9 @@ class Plugin
     # no need to refresh if brickid does not exists
     if (self.brickid)
       self.actionParam = actionParam
-      self.getConfig () =>
+      self.loadConfig () =>
+        # need to be in it's own function here to use local var
         self.refreshAdPodsInternal(actionParam, forceRefresh)
-
     @
 
   ###*
@@ -551,20 +550,23 @@ class Plugin
     $adUnit = dom(parentEl)
     $adUnit.html('')
     allData = trakless.util.allData(parentEl)
-    dimensions = self.getDimensions(allData) || [[300,250]]
+    dimensions = self.getDimensions(allData)
 
     iframe = doc.createElement('iframe');
     iframe.className = 'brickframe'
-    iframe.scrolling = 'no'
-    iframe.frameBorder = 0
+    #iframe.id = tagId;
+    #iframe.name = tagId;
+    iframe.frameBorder = "0"
+    iframe.marginWidth = "0"
+    iframe.marginHeight = "0"
+    iframe.scrolling = "no"
+    iframe.setAttribute('border', '0');
+    iframe.setAttribute('allowtransparency', "true");
+
     iframe.height = dimensions[0][1]
     iframe.width = dimensions[0][0]
-    iframe.marginWidth = 0
-    iframe.marginHeight = 0
-    iframe.style.borderStyle = 'none'
 
     parentEl.appendChild iframe
-    # iframe.src = "/src/iframe.html"
 
     if iframe.contentWindow
       iframe.contentWindow.contents = self.iframeContent
@@ -574,6 +576,7 @@ class Plugin
     doc = iframe.document;
     if iframe.contentDocument 
       doc = iframe.contentDocument
+
     doc.open()
     doc.write(self.iframeContent)
     doc.close()
@@ -705,30 +708,6 @@ if gsnContext?
 
     return
 
-  myBrick.Advertising.on 'clickPromotion', (data) ->
-    if data.type != 'brickevent:clickPromotion'
-      return
-
-    linkData = data.detail
-    if linkData
-      win.location.replace '/Ads/Promotion.aspx?adcode=' + linkData.AdCode
-    return
-
-  myBrick.Advertising.on 'clickBrickOffer', (data) ->
-    if data.type != 'brickevent:clickBrickOffer'
-      return
-
-    linkData = data.detail
-    if linkData
-      url = "#{myBrick.Advertising.apiUrl}/profile/BrickOffer/#{gsnContext.ConsumerID}/#{linkData.OfferCode}"
-
-      # open brick offer using the new api URL
-      # need to worry about popup blockers
-      win.open url, ''
-
-    # myBrick.Advertising.refresh()
-    return
-
 # auto init with attributes
 # at this point, we expect Gsn.Advertising to be available from above
 
@@ -741,9 +720,6 @@ attrs =
     aPlugin.isDebug = value isnt "false"
     if (value)
       debug.enable('bricktag')
-  api: (value) ->
-    return unless typeof value is "string"
-    aPlugin.apiUrl = value
   source: (value) ->
     return unless typeof value is "string"
     aPlugin.source = value
@@ -757,9 +733,6 @@ attrs =
   cleanrefresh: (value) ->
     return unless value
     aPlugin.cleanRefresh = value
-  selector: (value) ->
-    return unless typeof value is "string"
-    aPlugin.selector = value
 
 for script in doc.getElementsByTagName("script")
   if /bricktag/i.test(script.src)
@@ -768,11 +741,11 @@ for script in doc.getElementsByTagName("script")
         fn script.getAttribute prefix+k
 
 
-trakless.setPixel('//pi.gsngrocers.com/pi.gif')
-trakless.store.init({url: '//cdn.gsngrocers.com/script/xstore.html', dntIgnore: true})
+trakless.setPixel(config.pixelUrl)
+trakless.store.init({url: config.xstoreUrl, dntIgnore: true})
 
 if aPlugin.hasBrickUnit()
- aPlugin.load()
+  aPlugin.load()
 else
   trakless.util.ready ->
     aPlugin.load()

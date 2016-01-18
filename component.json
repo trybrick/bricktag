@@ -1,6 +1,6 @@
 {
   "name": "bricktag",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Brick Tag Plugin",
   "homepage": "http://www.trybrick.com",
   "author": "Tom Nguyen",
@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "visionmedia/debug": "*",
-    "segmentio/load-script": "*",
+    "segmentio/load-script-once": "*",
     "component/emitter": "*",
     "component/dom": "*",
     "niiknow/trakless": "*",
