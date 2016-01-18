@@ -636,7 +636,7 @@
       if (rsp) {
         _tk.util.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
         _tk.util.session('brickTag', rsp[0]);
-        self.ensureConfigLoaded();
+        self.ensureScriptLoaded();
         return self.refreshAdPodsInternal(self.actionParam, true);
       }
     };

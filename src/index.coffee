@@ -451,7 +451,7 @@ class Plugin
     if rsp
       _tk.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
       _tk.util.session('brickTag', rsp[0])
-      self.ensureConfigLoaded()
+      self.ensureScriptLoaded()
       self.refreshAdPodsInternal(self.actionParam, true)
 
   ###*
