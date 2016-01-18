@@ -450,6 +450,10 @@ class Plugin
 
     if rsp
       _tk.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
+      data = {
+        s1: rsp[0]?.brickTagScriptUrl
+        s2: rsp[0]?.brickTagFrameContent
+      }
       _tk.util.session('brickTag', rsp[0])
       self.ensureScriptLoaded()
       self.refreshAdPodsInternal(self.actionParam, true)
@@ -469,13 +473,13 @@ class Plugin
     else
       cfg = {}
 
-    btscript = cfg.brickTagScriptUrl + ""
+    btscript = cfg.s1 + ""
     cb = (new Date()).getTime()
     # load additional script
     if (btscript.indexOf('//') >= 0)
       loadScript(btscript.replace('%%CACHEBUSTER%%', cb))
 
-    frameContent = cfg.brickTagFrameContent
+    frameContent = cfg.s2
     if (frameContent)
       self.iframeContent = self.iframeContent.replace("<!--REPLACEME-->", frameContent.replace('%%CACHEBUSTER%%', cb))
 
@@ -508,7 +512,6 @@ class Plugin
   ###
   refresh: (actionParam, forceRefresh) ->
     self = myBrick.Advertising
-    if !self.hasBrickUnit() then return self
 
     # no need to refresh if brickid does not exists
     if (self.brickid)
@@ -517,13 +520,6 @@ class Plugin
         # need to be in it's own function here to use local var
         self.refreshAdPodsInternal(actionParam, forceRefresh)
     @
-
-  ###*
-  # determine if there are adpods on the page
-  #
-  ###
-  hasBrickUnit: () ->
-    return dom('.brickadunit,.brickunit,.brick-noads').length > 0
 
   ###*
   # set global defaults
@@ -744,10 +740,7 @@ for script in doc.getElementsByTagName("script")
 trakless.setPixel(config.pixelUrl)
 trakless.store.init({url: config.xstoreUrl, dntIgnore: true})
 
-if aPlugin.hasBrickUnit()
+trakless.util.ready ->
   aPlugin.load()
-else
-  trakless.util.ready ->
-    aPlugin.load()
 
 module.exports = myBrick

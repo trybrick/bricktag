@@ -625,7 +625,7 @@
      */
 
     Plugin.prototype.configSuccess = function(svrRsp) {
-      var ref, rsp, self;
+      var data, ref, ref1, ref2, rsp, self;
       win.brickConfigCallback = null;
       rsp = svrRsp;
       if (typeof svrRsp === 'string') {
@@ -635,6 +635,10 @@
       self.configLoaded = true;
       if (rsp) {
         _tk.util.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
+        data = {
+          s1: (ref1 = rsp[0]) != null ? ref1.brickTagScriptUrl : void 0,
+          s2: (ref2 = rsp[0]) != null ? ref2.brickTagFrameContent : void 0
+        };
         _tk.util.session('brickTag', rsp[0]);
         self.ensureScriptLoaded();
         return self.refreshAdPodsInternal(self.actionParam, true);
@@ -659,12 +663,12 @@
       } else {
         cfg = {};
       }
-      btscript = cfg.brickTagScriptUrl + "";
+      btscript = cfg.s1 + "";
       cb = (new Date()).getTime();
       if (btscript.indexOf('//') >= 0) {
         loadScript(btscript.replace('%%CACHEBUSTER%%', cb));
       }
-      frameContent = cfg.brickTagFrameContent;
+      frameContent = cfg.s2;
       if (frameContent) {
         return self.iframeContent = self.iframeContent.replace("<!--REPLACEME-->", frameContent.replace('%%CACHEBUSTER%%', cb));
       }
@@ -702,9 +706,6 @@
     Plugin.prototype.refresh = function(actionParam, forceRefresh) {
       var self;
       self = myBrick.Advertising;
-      if (!self.hasBrickUnit()) {
-        return self;
-      }
       if (self.brickid) {
         self.actionParam = actionParam;
         self.loadConfig((function(_this) {
@@ -714,16 +715,6 @@
         })(this));
       }
       return this;
-    };
-
-
-    /**
-     * determine if there are adpods on the page
-     *
-     */
-
-    Plugin.prototype.hasBrickUnit = function() {
-      return dom('.brickadunit,.brickunit,.brick-noads').length > 0;
     };
 
 
@@ -1003,13 +994,9 @@
     dntIgnore: true
   });
 
-  if (aPlugin.hasBrickUnit()) {
-    aPlugin.load();
-  } else {
-    trakless.util.ready(function() {
-      return aPlugin.load();
-    });
-  }
+  trakless.util.ready(function() {
+    return aPlugin.load();
+  });
 
   module.exports = myBrick;
 
