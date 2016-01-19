@@ -47,7 +47,7 @@ config = {
 
 class Plugin
   pluginLoaded: true
-  iframeContent: '<!DOCTYPE html><html> <head> <title></title> <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script> </head> <body> <script>var pwin=window.parent; try{var testwin=window.top.bricktag; pwin=window.top;}catch (e){}; try{var br=window.bricktag=document.bricktag=pwin.bricktag; var url=bt.getAnxUrl($(document).width(), $(document).height()); document.write(url);}catch (e){}; </script> <!--REPLACEME--></body></html>'
+  iframeContent: '<!DOCTYPE html><html> <head> <title></title> <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.2.1/jquery-migrate.min.js"></script> </head> <body> <script>var pwin=window.parent; try{var testwin=window.top.bricktag; pwin=window.top;}catch (e){}; try{var bt=window.bricktag=document.bricktag=pwin.bricktag; var url=bt.getAnxUrl($(document).width(), $(document).height()); document.write(url);}catch (e){}; </script> <!--REPLACEME--></body></html>'
   defP:
     # default action parameters *optional* means it will not break but we would want it if possible
      # required - example: registration, coupon, circular
