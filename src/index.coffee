@@ -41,7 +41,7 @@ formatDate = (date) ->
   ].join ''
 
 config = {
-  pixelUrl: "//pi.gsngrocers.com/pi.gif",
+  pixelUrl: "//cdn.gsngrocers.com/pi.gif",
   xstoreUrl: "//cdn.gsngrocers.com/script/xstore.html"
 }
 
@@ -419,7 +419,7 @@ class Plugin
 
     # track payLoad
     payLoad.siteid = self.brickid
-    self.trackAction payLoad
+    # self.trackAction payLoad
     canRefresh = ((new Date).getTime() / 1000 - lastRefreshTime) >= self.minSecondBetweenRefresh
 
     if (forceRefresh || canRefresh)

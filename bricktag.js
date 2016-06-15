@@ -150,7 +150,7 @@
   };
 
   config = {
-    pixelUrl: "//pi.gsngrocers.com/pi.gif",
+    pixelUrl: "//cdn.gsngrocers.com/pi.gif",
     xstoreUrl: "//cdn.gsngrocers.com/script/xstore.html"
   };
 
@@ -604,7 +604,6 @@
         }
       }
       payLoad.siteid = self.brickid;
-      self.trackAction(payLoad);
       canRefresh = ((new Date).getTime() / 1000 - lastRefreshTime) >= self.minSecondBetweenRefresh;
       if (forceRefresh || canRefresh) {
         lastRefreshTime = (new Date()).getTime() / 1000;
