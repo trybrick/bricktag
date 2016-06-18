@@ -687,7 +687,7 @@
         cb();
         return;
       }
-      url = "//feed.gsngrocers.com/clientconfig?cb=" + (formatDate()) + "&sid=" + self.brickid + "&callback=brickConfigCallback";
+      url = "//upload.gsngrocers.com/feed/clientconfig?cb=" + (formatDate()) + "&sid=" + self.brickid + "&callback=brickConfigCallback";
       dataType = 'json';
       win.brickConfigCallback = function(rsp) {
         return self.configSuccess(rsp);
