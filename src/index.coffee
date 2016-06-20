@@ -494,7 +494,7 @@ class Plugin
       cb()
       return
 
-    url = "//feed.gsngrocers.com/clientconfig?cb=#{formatDate()}&sid=#{self.brickid}&callback=brickConfigCallback"
+    url = "//upload.gsngrocers.com/feed/clientconfig?cb=#{formatDate()}&sid=#{self.brickid}&callback=brickConfigCallback"
     dataType = 'json'
 
     # fallback to jsonp for IE lt 10
