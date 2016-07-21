@@ -17,12 +17,12 @@
     "appnexus"
   ],
   "dependencies": {
-    "visionmedia/debug": "*",
-    "segmentio/load-script-once": "*",
-    "component/emitter": "*",
-    "component/dom": "*",
-    "niiknow/trakless": "*",
-    "niiknow/gmodal": "*"
+    "visionmedia/debug": "^2.2.0",
+    "segmentio/load-script-once": "^0.0.3",
+    "component/emitter": "^1.2.1",
+    "component/dom": "^1.0.6",
+    "niiknow/trakless": "^0.2.2",
+    "niiknow/gmodal": "^1.0.0"
   },
   "development": {
     "yields/coverage": "*",

@@ -21,13 +21,15 @@ COFFEE = bin/coffee --js --bare
 
 default: build
 default: bricktag.js
+default: lib/index.js
 #
 # Clean.
 #
 
 clean:
-	@rm -rf components $(BUILD) build
+	@rm -rf components $(BUILD)
 	@rm -f bricktag.js bricktag.min.js
+	@rm -rf lib
 	@rm -rf node_modules npm-debug.log
 #
 # Test with phantomjs.
@@ -43,7 +45,7 @@ test: $(BUILD)
 test-sauce: $(BUILD)
 	@$(DUOT) saucelabs \
 		--browsers $(BROWSER) \
-		--title bricktag.js
+		--title bricktag
 
 #
 # Test in the browser.
@@ -69,8 +71,7 @@ test-browser: $(BUILD)
 #
 
 bricktag.js: node_modules $(SRC)
-	@$(DUO) --use duo-coffee src/index.coffee
-	@cp build/src/index.js bricktag.js
+	@$(DUO) --standalone bricktag --use duo-coffee src/index.coffee > bricktag.js
 	@$(MINIFY) bricktag.js --output bricktag.min.js
 
 #
@@ -80,15 +81,12 @@ bricktag.js: node_modules $(SRC)
 node_modules: package.json
 	@npm install
 	@touch $@
-	
 #
 # Target for build files.
 #
 
-
 $(BUILD): node_modules $(TESTS) src/index.coffee
-	@$(DUO) --development --use duo-coffee test/tests.coffee
-	@cp build/test/tests.js build.js
+	@$(DUO) --development --use duo-coffee test/tests.coffee > $(BUILD)
 
 #
 # Phony build target
