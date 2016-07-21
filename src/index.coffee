@@ -744,4 +744,4 @@ trakless.store.init({url: config.xstoreUrl, dntIgnore: true})
 trakless.util.ready ->
   aPlugin.load()
 
-module.exports = myBrick
+module.exports = aPlugin

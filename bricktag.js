@@ -999,7 +999,7 @@
     return aPlugin.load();
   });
 
-  module.exports = myBrick;
+  module.exports = aPlugin;
 
 }).call(this);
 
