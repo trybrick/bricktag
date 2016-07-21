@@ -438,6 +438,7 @@ class Plugin
    * @return {Object}
   ###
   configSuccess: (svrRsp) ->
+    self = @
     # remove handler for security reason
     win.brickConfigCallback = null
 
@@ -463,6 +464,7 @@ class Plugin
    * @return {Object}
   ###
   ensureScriptLoaded: () ->
+    self = @
     if (!self.configLoaded or self.scriptLoaded)
       return
 
@@ -570,13 +572,13 @@ class Plugin
       return
 
     doc = iframe.document;
-    if iframe.contentDocument 
+    if iframe.contentDocument
       doc = iframe.contentDocument
 
     doc.open()
     doc.write(self.iframeContent)
     doc.close()
-    
+
 
   ###*
   # method for support refreshing with timer

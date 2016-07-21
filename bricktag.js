@@ -1,4 +1,12 @@
-(function outer(modules, cache, entries){
+(function umd(require){
+  if ('object' == typeof exports) {
+    module.exports = require('1');
+  } else if ('function' == typeof define && define.amd) {
+    define(function(){ return require('1'); });
+  } else {
+    this['bricktag'] = require('1');
+  }
+})((function outer(modules, cache, entries){
 
   /**
    * Global
@@ -10,10 +18,11 @@
    * Require `name`.
    *
    * @param {String} name
+   * @param {Boolean} jumped
    * @api public
    */
 
-  function require(name){
+  function require(name, jumped){
     if (cache[name]) return cache[name].exports;
     if (modules[name]) return call(name, require);
     throw new Error('cannot find module "' + name + '"');
@@ -33,22 +42,14 @@
     var mod = modules[id];
     var name = mod[2];
     var fn = mod[0];
-    var threw = true;
 
-    try {
-      fn.call(m.exports, function(req){
-        var dep = modules[id][1][req];
-        return require(dep || req);
-      }, m, m.exports, outer, modules, cache, entries);
-      threw = false;
-    } finally {
-      if (threw) {
-        delete cache[id];
-      } else if (name) {
-        // expose as 'name'.
-        cache[name] = cache[id];
-      }
-    }
+    fn.call(m.exports, function(req){
+      var dep = modules[id][1][req];
+      return require(dep ? dep : req);
+    }, m, m.exports, outer, modules, cache, entries);
+
+    // expose as `name`.
+    if (name) cache[name] = cache[id];
 
     return cache[id].exports;
   }
@@ -625,6 +626,7 @@
 
     Plugin.prototype.configSuccess = function(svrRsp) {
       var data, ref, ref1, ref2, rsp, self;
+      self = this;
       win.brickConfigCallback = null;
       rsp = svrRsp;
       if (typeof svrRsp === 'string') {
@@ -651,7 +653,8 @@
      */
 
     Plugin.prototype.ensureScriptLoaded = function() {
-      var btscript, cb, cfg, frameContent;
+      var btscript, cb, cfg, frameContent, self;
+      self = this;
       if (!self.configLoaded || self.scriptLoaded) {
         return;
       }
@@ -9380,3 +9383,4 @@ function match(el, selector) {
 }
 
 }, {"query":38}]}, {}, {"1":""})
+);
