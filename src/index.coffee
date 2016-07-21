@@ -447,7 +447,7 @@ class Plugin
       rsp = JSON.parse(svrRsp)
 
     self = myBrick.Advertising
-    self.configLoaded = true
+    win.bricktag.configLoaded = true
 
     if rsp
       _tk.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
@@ -464,11 +464,10 @@ class Plugin
    * @return {Object}
   ###
   ensureScriptLoaded: () ->
-    self = @
-    if (!self.configLoaded or self.scriptLoaded)
+    if (!win.bricktag.configLoaded or win.bricktag.scriptLoaded)
       return
 
-    self.scriptLoaded = true
+    win.bricktag.scriptLoaded = true
     cfg = _tk.util.session('brickTag')
     if (cfg)
       cfg = JSON.parse(cfg)
@@ -491,7 +490,7 @@ class Plugin
   ###
   loadConfig: (cb) ->
     self = @
-    if self.getNetworkId() or self.configLoaded
+    if self.getNetworkId() or win.bricktag.configLoaded
       self.ensureScriptLoaded()
       cb()
       return

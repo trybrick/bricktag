@@ -633,7 +633,7 @@
         rsp = JSON.parse(svrRsp);
       }
       self = myBrick.Advertising;
-      self.configLoaded = true;
+      win.bricktag.configLoaded = true;
       if (rsp) {
         _tk.util.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
         data = {
@@ -653,12 +653,11 @@
      */
 
     Plugin.prototype.ensureScriptLoaded = function() {
-      var btscript, cb, cfg, frameContent, self;
-      self = this;
-      if (!self.configLoaded || self.scriptLoaded) {
+      var btscript, cb, cfg, frameContent;
+      if (!win.bricktag.configLoaded || win.bricktag.scriptLoaded) {
         return;
       }
-      self.scriptLoaded = true;
+      win.bricktag.scriptLoaded = true;
       cfg = _tk.util.session('brickTag');
       if (cfg) {
         cfg = JSON.parse(cfg);
@@ -685,7 +684,7 @@
     Plugin.prototype.loadConfig = function(cb) {
       var dataType, self, url;
       self = this;
-      if (self.getNetworkId() || self.configLoaded) {
+      if (self.getNetworkId() || win.bricktag.configLoaded) {
         self.ensureScriptLoaded();
         cb();
         return;
