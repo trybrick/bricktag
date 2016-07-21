@@ -626,14 +626,13 @@
 
     Plugin.prototype.configSuccess = function(svrRsp) {
       var data, ref, ref1, ref2, rsp, self;
-      self = this;
       win.brickConfigCallback = null;
       rsp = svrRsp;
       if (typeof svrRsp === 'string') {
         rsp = JSON.parse(svrRsp);
       }
       self = myBrick.Advertising;
-      win.bricktag.configLoaded = true;
+      self.configLoaded = true;
       if (rsp) {
         _tk.util.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
         data = {
@@ -653,11 +652,12 @@
      */
 
     Plugin.prototype.ensureScriptLoaded = function() {
-      var btscript, cb, cfg, frameContent;
-      if (!win.bricktag.configLoaded || win.bricktag.scriptLoaded) {
+      var btscript, cb, cfg, frameContent, self;
+      self = this;
+      if (!self.configLoaded || self.scriptLoaded) {
         return;
       }
-      win.bricktag.scriptLoaded = true;
+      self.scriptLoaded = true;
       cfg = _tk.util.session('brickTag');
       if (cfg) {
         cfg = JSON.parse(cfg);
@@ -684,7 +684,7 @@
     Plugin.prototype.loadConfig = function(cb) {
       var dataType, self, url;
       self = this;
-      if (self.getNetworkId() || win.bricktag.configLoaded) {
+      if (self.getNetworkId() || self.configLoaded) {
         self.ensureScriptLoaded();
         cb();
         return;

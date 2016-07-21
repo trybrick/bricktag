@@ -438,7 +438,6 @@ class Plugin
    * @return {Object}
   ###
   configSuccess: (svrRsp) ->
-    self = @
     # remove handler for security reason
     win.brickConfigCallback = null
 
@@ -447,7 +446,7 @@ class Plugin
       rsp = JSON.parse(svrRsp)
 
     self = myBrick.Advertising
-    win.bricktag.configLoaded = true
+    self.configLoaded = true
 
     if rsp
       _tk.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
@@ -464,10 +463,11 @@ class Plugin
    * @return {Object}
   ###
   ensureScriptLoaded: () ->
-    if (!win.bricktag.configLoaded or win.bricktag.scriptLoaded)
+    self = @
+    if (!self.configLoaded or self.scriptLoaded)
       return
 
-    win.bricktag.scriptLoaded = true
+    self.scriptLoaded = true
     cfg = _tk.util.session('brickTag')
     if (cfg)
       cfg = JSON.parse(cfg)
@@ -490,7 +490,7 @@ class Plugin
   ###
   loadConfig: (cb) ->
     self = @
-    if self.getNetworkId() or win.bricktag.configLoaded
+    if self.getNetworkId() or self.configLoaded
       self.ensureScriptLoaded()
       cb()
       return
