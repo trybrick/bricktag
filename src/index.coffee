@@ -450,39 +450,7 @@ class Plugin
 
     if rsp
       _tk.util.session('anxTagId', rsp[0]?.appNexusPlacementTagId)
-      data = {
-        s1: rsp[0]?.brickTagScriptUrl
-        s2: rsp[0]?.brickTagFrameContent
-      }
-      _tk.util.session('brickTag', rsp[0])
-      self.ensureScriptLoaded()
       self.refreshAdPodsInternal(self.actionParam, true)
-
-  ###*
-   * make sure config script are loaded
-   * @return {Object}
-  ###
-  ensureScriptLoaded: () ->
-    self = @
-    if (!self.configLoaded or self.scriptLoaded)
-      return
-
-    self.scriptLoaded = true
-    cfg = _tk.util.session('brickTag')
-    if (cfg)
-      cfg = JSON.parse(cfg)
-    else
-      cfg = {}
-
-    btscript = cfg.s1 + ""
-    cb = (new Date()).getTime()
-    # load additional script
-    if (btscript.indexOf('//') >= 0)
-      loadScript(btscript.replace('%%CACHEBUSTER%%', cb))
-
-    frameContent = cfg.s2
-    if (frameContent)
-      self.iframeContent = self.iframeContent.replace("<!--REPLACEME-->", frameContent.replace('%%CACHEBUSTER%%', cb))
 
   ###*
    * config request method
@@ -491,7 +459,6 @@ class Plugin
   loadConfig: (cb) ->
     self = @
     if self.getNetworkId() or self.configLoaded
-      self.ensureScriptLoaded()
       cb()
       return
 
