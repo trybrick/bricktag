@@ -625,7 +625,7 @@
      */
 
     Plugin.prototype.configSuccess = function(svrRsp) {
-      var data, ref, ref1, ref2, rsp, self;
+      var ref, rsp, self;
       win.brickConfigCallback = null;
       rsp = svrRsp;
       if (typeof svrRsp === 'string') {
@@ -635,43 +635,7 @@
       self.configLoaded = true;
       if (rsp) {
         _tk.util.session('anxTagId', (ref = rsp[0]) != null ? ref.appNexusPlacementTagId : void 0);
-        data = {
-          s1: (ref1 = rsp[0]) != null ? ref1.brickTagScriptUrl : void 0,
-          s2: (ref2 = rsp[0]) != null ? ref2.brickTagFrameContent : void 0
-        };
-        _tk.util.session('brickTag', rsp[0]);
-        self.ensureScriptLoaded();
         return self.refreshAdPodsInternal(self.actionParam, true);
-      }
-    };
-
-
-    /**
-     * make sure config script are loaded
-     * @return {Object}
-     */
-
-    Plugin.prototype.ensureScriptLoaded = function() {
-      var btscript, cb, cfg, frameContent, self;
-      self = this;
-      if (!self.configLoaded || self.scriptLoaded) {
-        return;
-      }
-      self.scriptLoaded = true;
-      cfg = _tk.util.session('brickTag');
-      if (cfg) {
-        cfg = JSON.parse(cfg);
-      } else {
-        cfg = {};
-      }
-      btscript = cfg.s1 + "";
-      cb = (new Date()).getTime();
-      if (btscript.indexOf('//') >= 0) {
-        loadScript(btscript.replace('%%CACHEBUSTER%%', cb));
-      }
-      frameContent = cfg.s2;
-      if (frameContent) {
-        return self.iframeContent = self.iframeContent.replace("<!--REPLACEME-->", frameContent.replace('%%CACHEBUSTER%%', cb));
       }
     };
 
@@ -685,7 +649,6 @@
       var dataType, self, url;
       self = this;
       if (self.getNetworkId() || self.configLoaded) {
-        self.ensureScriptLoaded();
         cb();
         return;
       }
@@ -4466,7 +4429,7 @@ lsqueue = (function() {
 
 module.exports = lsqueue;
 
-}, {"json-fallback":33,"debounce":17,"store.js":34}],
+}, {"json-fallback":33,"debounce":34,"store.js":35}],
 33: [function(require, module, exports) {
 /*
     json2.js
@@ -4958,6 +4921,72 @@ module.exports = lsqueue;
 
 }, {}],
 34: [function(require, module, exports) {
+
+/**
+ * Module dependencies.
+ */
+
+var now = require('date-now');
+
+/**
+ * Returns a function, that, as long as it continues to be invoked, will not
+ * be triggered. The function will be called after it stops being called for
+ * N milliseconds. If `immediate` is passed, trigger the function on the
+ * leading edge, instead of the trailing. The function also has a property 'clear' 
+ * that is a function which will clear the timer to prevent previously scheduled executions. 
+ *
+ * @source underscore.js
+ * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
+ * @param {Function} function to wrap
+ * @param {Number} timeout in ms (`100`)
+ * @param {Boolean} whether to execute at the beginning (`false`)
+ * @api public
+ */
+
+module.exports = function debounce(func, wait, immediate){
+  var timeout, args, context, timestamp, result;
+  if (null == wait) wait = 100;
+
+  function later() {
+    var last = now() - timestamp;
+
+    if (last < wait && last > 0) {
+      timeout = setTimeout(later, wait - last);
+    } else {
+      timeout = null;
+      if (!immediate) {
+        result = func.apply(context, args);
+        context = args = null;
+      }
+    }
+  };
+
+  var debounced = function(){
+    context = this;
+    args = arguments;
+    timestamp = now();
+    var callNow = immediate && !timeout;
+    if (!timeout) timeout = setTimeout(later, wait);
+    if (callNow) {
+      result = func.apply(context, args);
+      context = args = null;
+    }
+
+    return result;
+  };
+
+  debounced.clear = function() {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+  };
+
+  return debounced;
+};
+
+}, {"date-now":32}],
+35: [function(require, module, exports) {
 "use strict"
 // Module export pattern from
 // https://github.com/umdjs/umd/blob/master/returnExports.js
@@ -5195,8 +5224,8 @@ exports.unbind = function(el, type, fn, capture){
   event.unbind(el, type, fn, capture);
 };
 
-}, {"closest":35,"event":36}],
-35: [function(require, module, exports) {
+}, {"closest":36,"event":37}],
+36: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -5234,8 +5263,8 @@ function closest (el, selector, scope) {
   return matches(el, selector) ? el : null;
 }
 
-}, {"matches-selector":37,"component-matches-selector":37}],
-37: [function(require, module, exports) {
+}, {"matches-selector":38,"component-matches-selector":38}],
+38: [function(require, module, exports) {
 /**
  * Module dependencies.
  */
@@ -5287,8 +5316,8 @@ function match(el, selector) {
   return false;
 }
 
-}, {"query":38,"component-query":38}],
-38: [function(require, module, exports) {
+}, {"query":39,"component-query":39}],
+39: [function(require, module, exports) {
 function one(selector, el) {
   return el.querySelector(selector);
 }
@@ -5312,7 +5341,7 @@ exports.engine = function(obj){
 };
 
 }, {}],
-36: [function(require, module, exports) {
+37: [function(require, module, exports) {
 var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
     unbind = window.removeEventListener ? 'removeEventListener' : 'detachEvent',
     prefix = bind !== 'addEventListener' ? 'on' : '';
@@ -5442,16 +5471,16 @@ function chooseUrl (options) {
   return src;
 }
 
-}, {"debug":39,"find":40,"load-script":41,"next-tick":26,"memoize-async":42,"url":43}],
-39: [function(require, module, exports) {
+}, {"debug":40,"find":41,"load-script":42,"next-tick":26,"memoize-async":43,"url":44}],
+40: [function(require, module, exports) {
 if ('undefined' == typeof window) {
   module.exports = require('./lib/debug');
 } else {
   module.exports = require('./debug');
 }
 
-}, {"./lib/debug":44,"./debug":45}],
-44: [function(require, module, exports) {
+}, {"./lib/debug":45,"./debug":46}],
+45: [function(require, module, exports) {
 /**
  * Module dependencies.
  */
@@ -5588,7 +5617,7 @@ function debug(name) {
 }
 
 }, {}],
-45: [function(require, module, exports) {
+46: [function(require, module, exports) {
 
 /**
  * Expose `debug()` as the module.
@@ -5715,7 +5744,7 @@ debug.enabled = function(name) {
 if (window.localStorage) debug.enable(localStorage.debug);
 
 }, {}],
-40: [function(require, module, exports) {
+41: [function(require, module, exports) {
 
 /**
  * Module dependencies.
@@ -5761,8 +5790,8 @@ function objectToFunction(obj) {
     return true;
   }
 }
-}, {"to-function":46}],
-46: [function(require, module, exports) {
+}, {"to-function":47}],
+47: [function(require, module, exports) {
 
 /**
  * Module Dependencies
@@ -5916,8 +5945,8 @@ function stripNested (prop, str, val) {
   });
 }
 
-}, {"props":47,"component-props":47}],
-47: [function(require, module, exports) {
+}, {"props":48,"component-props":48}],
+48: [function(require, module, exports) {
 /**
  * Global Names
  */
@@ -6005,7 +6034,7 @@ function prefixed(str) {
 }
 
 }, {}],
-41: [function(require, module, exports) {
+42: [function(require, module, exports) {
 var type = require('type');
 
 
@@ -6064,7 +6093,7 @@ module.exports = function loadScript (options, callback) {
 };
 
 }, {"type":27}],
-42: [function(require, module, exports) {
+43: [function(require, module, exports) {
 
 var nextTick = require('next-tick');
 
@@ -6175,7 +6204,7 @@ function toRes (err, args) {
 }
 
 }, {"next-tick":26}],
-43: [function(require, module, exports) {
+44: [function(require, module, exports) {
 
 /**
  * Parse the given `url`.
@@ -6244,7 +6273,7 @@ exports.isCrossDomain = function(url){
 }, {}],
 5: [function(require, module, exports) {
 // Generated by CoffeeScript 1.10.0
-var Emitter, checkEvent, createModal, domify, gmodal, hideModalInternal, modal, modals, showModalInternal, trim, win;
+var Emitter, checkEvent, createModal, createiFrame, domify, gmodal, hideModalInternal, modal, modals, showModalInternal, trim, win;
 
 Emitter = require('emitter');
 
@@ -6328,6 +6357,30 @@ createModal = function(self) {
   return el;
 };
 
+createiFrame = function(parentEl, content) {
+  var doc, iframe;
+  iframe = win.document.createElement('iframe');
+  iframe.className = 'gmodal-iframe';
+  iframe.frameBorder = '0';
+  iframe.marginWidth = '0';
+  iframe.marginHeight = '0';
+  iframe.setAttribute('border', '0');
+  iframe.setAttribute('allowtransparency', 'true');
+  iframe.width = '100%';
+  iframe.height = '100%';
+  parentEl.appendChild(iframe);
+  if (iframe.contentWindow) {
+    iframe.contentWindow.contents = content;
+    iframe.src = 'javascript:window["contents"]';
+    return iframe;
+  }
+  doc = iframe.contentDocument || iframe.document;
+  doc.open();
+  doc.write(content);
+  doc.close();
+  return iframe;
+};
+
 showModalInternal = function(self, opts) {
   var body, eCls, i, len, ref, v;
   self.isVisible = true;
@@ -6338,7 +6391,11 @@ showModalInternal = function(self, opts) {
         self.el.removeChild(self.el.firstChild);
       }
       if (typeof self.opts.content === 'string') {
-        self.el.appendChild(domify(self.opts.content));
+        if (self.opts.content.indexOf('<!DOCTYPE') > -1 || self.opts.iframe) {
+          createiFrame(self.el, self.opts.content);
+        } else {
+          self.el.appendChild(domify(self.opts.content));
+        }
       } else {
         self.el.appendChild(self.opts.content);
       }
@@ -6508,7 +6565,7 @@ modal = (function() {
 
   /**
    * helper method to determine if an element has class
-   * @param  {HTMLElement}  el  
+   * @param  {HTMLElement}  el
    * @param  {string}       cls class names
    * @return {Boolean}
    */
@@ -6538,11 +6595,14 @@ modal = (function() {
     self = this;
     if ((self.elWrapper != null) && !self.shim) {
       self.ishim = self.doc.createElement('iframe');
-      self.ishim.className = 'iframeshim';
+      self.ishim.className = 'gmodal-iframeshim';
+      self.ishim.frameBorder = '0';
+      self.ishim.marginWidth = '0';
+      self.ishim.marginHeight = '0';
       self.ishim.scrolling = 'no';
-      self.ishim.frameborder = 0;
-      self.ishim.height = '100';
-      self.ishim.width = '100';
+      self.ishim.setAttribute('border', '0');
+      self.ishim.height = '100%';
+      self.ishim.width = '100%';
       self.elWrapper.appendChild(self.ishim);
     }
     return self;
@@ -6560,8 +6620,8 @@ if (!gmodal) {
 
 module.exports = gmodal;
 
-}, {"emitter":48,"domify":49,"trim":29}],
-48: [function(require, module, exports) {
+}, {"emitter":49,"domify":50,"trim":29}],
+49: [function(require, module, exports) {
 
 /**
  * Expose `Emitter`.
@@ -6727,7 +6787,7 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 }, {}],
-49: [function(require, module, exports) {
+50: [function(require, module, exports) {
 
 /**
  * Expose `parse`.
@@ -7069,8 +7129,8 @@ function isHTML(str) {
   return !!(match && match[1]);
 }
 
-}, {"domify":50,"each":51,"event":36,"keys":52,"query":38,"trim":29,"./lib/attributes":53,"./lib/classes":54,"./lib/events":55,"./lib/manipulate":56,"./lib/traverse":57}],
-50: [function(require, module, exports) {
+}, {"domify":51,"each":52,"event":37,"keys":53,"query":39,"trim":29,"./lib/attributes":54,"./lib/classes":55,"./lib/events":56,"./lib/manipulate":57,"./lib/traverse":58}],
+51: [function(require, module, exports) {
 
 /**
  * Expose `parse`.
@@ -7181,7 +7241,7 @@ function parse(html, doc) {
 }
 
 }, {}],
-51: [function(require, module, exports) {
+52: [function(require, module, exports) {
 
 /**
  * Module dependencies.
@@ -7272,8 +7332,8 @@ function array(obj, fn, ctx) {
   }
 }
 
-}, {"type":58,"component-type":58,"to-function":46}],
-58: [function(require, module, exports) {
+}, {"type":59,"component-type":59,"to-function":47}],
+59: [function(require, module, exports) {
 
 /**
  * toString ref.
@@ -7308,7 +7368,7 @@ module.exports = function(val){
 };
 
 }, {}],
-52: [function(require, module, exports) {
+53: [function(require, module, exports) {
 var has = Object.prototype.hasOwnProperty;
 
 module.exports = Object.keys || function(obj){
@@ -7324,7 +7384,7 @@ module.exports = Object.keys || function(obj){
 };
 
 }, {}],
-53: [function(require, module, exports) {
+54: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -7412,8 +7472,8 @@ exports.value = function(val){
   });
 };
 
-}, {"value":59}],
-59: [function(require, module, exports) {
+}, {"value":60}],
+60: [function(require, module, exports) {
 
 /**
  * Module dependencies.
@@ -7511,7 +7571,7 @@ function type(el) {
 }
 
 }, {"type":27}],
-54: [function(require, module, exports) {
+55: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -7594,8 +7654,8 @@ exports.hasClass = function(name){
   return false;
 };
 
-}, {"classes":60}],
-60: [function(require, module, exports) {
+}, {"classes":61}],
+61: [function(require, module, exports) {
 /**
  * Module dependencies.
  */
@@ -7784,7 +7844,7 @@ ClassList.prototype.contains = function(name){
 };
 
 }, {"indexof":28}],
-55: [function(require, module, exports) {
+56: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -7848,8 +7908,8 @@ exports.off = function(event, selector, fn, capture){
   });
 };
 
-}, {"event":36,"delegate":19}],
-56: [function(require, module, exports) {
+}, {"event":37,"delegate":19}],
+57: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -8136,8 +8196,8 @@ exports.focus = function(){
   return this;
 };
 
-}, {"value":59,"css":61,"text":62}],
-61: [function(require, module, exports) {
+}, {"value":60,"css":62,"text":63}],
+62: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -8197,8 +8257,8 @@ function setStyles(el, props) {
   return el;
 }
 
-}, {"debug":2,"./lib/style":63,"./lib/css":64}],
-63: [function(require, module, exports) {
+}, {"debug":2,"./lib/style":64,"./lib/css":65}],
+64: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -8306,8 +8366,8 @@ function get(el, prop, orig, extra) {
   return ret;
 }
 
-}, {"debug":2,"to-camel-case":65,"./support":66,"./prop":67,"./hooks":68}],
-65: [function(require, module, exports) {
+}, {"debug":2,"to-camel-case":66,"./support":67,"./prop":68,"./hooks":69}],
+66: [function(require, module, exports) {
 
 var toSpace = require('to-space-case');
 
@@ -8332,8 +8392,8 @@ function toCamelCase (string) {
     return letter.toUpperCase();
   });
 }
-}, {"to-space-case":69}],
-69: [function(require, module, exports) {
+}, {"to-space-case":70}],
+70: [function(require, module, exports) {
 
 var clean = require('to-no-case');
 
@@ -8358,8 +8418,8 @@ function toSpaceCase (string) {
     return match ? ' ' + match : '';
   });
 }
-}, {"to-no-case":70}],
-70: [function(require, module, exports) {
+}, {"to-no-case":71}],
+71: [function(require, module, exports) {
 
 /**
  * Expose `toNoCase`.
@@ -8435,7 +8495,7 @@ function uncamelize (string) {
   });
 }
 }, {}],
-66: [function(require, module, exports) {
+67: [function(require, module, exports) {
 /**
  * Support values
  */
@@ -8539,7 +8599,7 @@ function computePixelPositionAndBoxSizingReliable() {
 
 
 }, {}],
-67: [function(require, module, exports) {
+68: [function(require, module, exports) {
 /**
  * Module dependencies
  */
@@ -8577,8 +8637,8 @@ function prop(prop, style) {
   return prop;
 }
 
-}, {"debug":2,"to-camel-case":65,"./vendor":71}],
-71: [function(require, module, exports) {
+}, {"debug":2,"to-camel-case":66,"./vendor":72}],
+72: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -8617,7 +8677,7 @@ function vendor(prop, style) {
 }
 
 }, {}],
-68: [function(require, module, exports) {
+69: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -8781,8 +8841,8 @@ function augmentWidthOrHeight(el, prop, extra, isBorderBox, styles) {
   return val;
 }
 
-}, {"each":51,"./css":64,"./styles":72,"./support":66,"./swap":73,"./computed":74}],
-64: [function(require, module, exports) {
+}, {"each":52,"./css":65,"./styles":73,"./support":67,"./swap":74,"./computed":75}],
+65: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -8864,8 +8924,8 @@ function isNumeric(obj) {
   return !isNan(parseFloat(obj)) && isFinite(obj);
 }
 
-}, {"debug":2,"to-camel-case":65,"./computed":74,"./prop":67,"./hooks":68}],
-74: [function(require, module, exports) {
+}, {"debug":2,"to-camel-case":66,"./computed":75,"./prop":68,"./hooks":69}],
+75: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -8915,8 +8975,8 @@ function computed(el, prop, precomputed) {
   return undefined === ret ? ret : ret + '';
 }
 
-}, {"debug":2,"within-document":75,"./styles":72,"./style":63}],
-75: [function(require, module, exports) {
+}, {"debug":2,"within-document":76,"./styles":73,"./style":64}],
+76: [function(require, module, exports) {
 
 /**
  * Check if `el` is within the document.
@@ -8934,7 +8994,7 @@ module.exports = function(el) {
   return false;
 };
 }, {}],
-72: [function(require, module, exports) {
+73: [function(require, module, exports) {
 /**
  * Expose `styles`
  */
@@ -8957,7 +9017,7 @@ function styles(el) {
 }
 
 }, {}],
-73: [function(require, module, exports) {
+74: [function(require, module, exports) {
 /**
  * Export `swap`
  */
@@ -8992,7 +9052,7 @@ function swap(el, options, fn, args) {
 }
 
 }, {}],
-62: [function(require, module, exports) {
+63: [function(require, module, exports) {
 
 var text = 'innerText' in document.createElement('div')
   ? 'innerText'
@@ -9004,7 +9064,7 @@ module.exports = function (el, val) {
 };
 
 }, {}],
-57: [function(require, module, exports) {
+58: [function(require, module, exports) {
 /**
  * Module Dependencies
  */
@@ -9296,8 +9356,8 @@ each([
   };
 });
 
-}, {"each":51,"traverse":76,"to-function":46,"matches-selector":77}],
-76: [function(require, module, exports) {
+}, {"each":52,"traverse":77,"to-function":47,"matches-selector":78}],
+77: [function(require, module, exports) {
 
 /**
  * dependencies
@@ -9333,8 +9393,8 @@ module.exports = function(type, el, selector, len){
   return ret;
 }
 
-}, {"matches-selector":37}],
-77: [function(require, module, exports) {
+}, {"matches-selector":38}],
+78: [function(require, module, exports) {
 /**
  * Module dependencies.
  */
@@ -9381,5 +9441,5 @@ function match(el, selector) {
   return false;
 }
 
-}, {"query":38}]}, {}, {"1":""})
+}, {"query":39}]}, {}, {"1":""})
 );
