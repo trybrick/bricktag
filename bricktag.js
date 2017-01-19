@@ -1553,7 +1553,7 @@ getImage = function(cfgUrl, tks, qs, callback) {
   var image, url;
   image = new Image(1, 1);
   if (cfgUrl.indexOf('//') === 0) {
-    cfgUrl = win.location.protocol === 'https' ? "https:" + cfgUrl : "http:" + cfgUrl;
+    cfgUrl = win.location.protocol === 'https:' ? "https:" + cfgUrl : "http:" + cfgUrl;
   }
   image.onload = function() {
     var iterator;
