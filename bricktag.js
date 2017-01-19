@@ -706,7 +706,7 @@
       self = this;
       networkId = self.getNetworkId();
       cb = (new Date()).getTime();
-      return url = "<script src=\"http://ib.adnxs.com/ttj?id=" + networkId + "&size=" + width + "x" + height + "&cb=" + cb + "\"></script>";
+      return url = "<script src=\"https://secure.adnxs.com/ttj?id=" + networkId + "&size=" + width + "x" + height + "&cb=" + cb + "\"></script>";
     };
 
     Plugin.prototype.createIframe = function(parentEl) {
@@ -3164,7 +3164,7 @@ function isBuffer(obj) {
         root.store = factory();
   }
 }(this, function () {
-	
+
 	// Store.js
 	var store = {},
 		win = (typeof window != 'undefined' ? window : global),
@@ -3335,7 +3335,7 @@ function isBuffer(obj) {
 		store.disabled = true
 	}
 	store.enabled = !store.disabled
-	
+
 	return store
 }));
 
@@ -4075,7 +4075,7 @@ var flashdetect = new function(){
     ];
     /**
      * Extract the ActiveX version of the plugin.
-     * 
+     *
      * @param {Object} The flash ActiveX object.
      * @type String
      */
@@ -4088,7 +4088,7 @@ var flashdetect = new function(){
     };
     /**
      * Try and retrieve an ActiveX object having a specified name.
-     * 
+     *
      * @param {String} name The ActiveX object name lookup.
      * @return One of ActiveX object or a simple object having an attribute of activeXError with a value of true.
      * @type Object
@@ -4104,8 +4104,8 @@ var flashdetect = new function(){
     };
     /**
      * Parse an ActiveX $version string into an object.
-     * 
-     * @param {String} str The ActiveX Object GetVariable($version) return value. 
+     *
+     * @param {String} str The ActiveX Object GetVariable($version) return value.
      * @return An object having raw, major, minor, revision and revisionStr attributes.
      * @type Object
      */
@@ -4121,7 +4121,7 @@ var flashdetect = new function(){
     };
     /**
      * Parse a standard enabledPlugin.description into an object.
-     * 
+     *
      * @param {String} str The enabledPlugin.description value.
      * @return An object having raw, major, minor, revision and revisionStr attributes.
      * @type Object
@@ -4133,14 +4133,14 @@ var flashdetect = new function(){
         return {
             "raw":str,
             "major":parseInt(majorMinor[0], 10),
-            "minor":parseInt(majorMinor[1], 10), 
+            "minor":parseInt(majorMinor[1], 10),
             "revisionStr":revisionStr,
             "revision":parseRevisionStrToInt(revisionStr)
         };
     };
     /**
      * Parse the plugin revision string into an integer.
-     * 
+     *
      * @param {String} The revision in string format.
      * @type Number
      */
@@ -4149,7 +4149,7 @@ var flashdetect = new function(){
     };
     /**
      * Is the major version greater than or equal to a specified version.
-     * 
+     *
      * @param {Number} version The minimum required major version.
      * @type Boolean
      */
@@ -4158,7 +4158,7 @@ var flashdetect = new function(){
     };
     /**
      * Is the minor version greater than or equal to a specified version.
-     * 
+     *
      * @param {Number} version The minimum required minor version.
      * @type Boolean
      */
@@ -4167,7 +4167,7 @@ var flashdetect = new function(){
     };
     /**
      * Is the revision version greater than or equal to a specified version.
-     * 
+     *
      * @param {Number} version The minimum required revision version.
      * @type Boolean
      */
@@ -4176,7 +4176,7 @@ var flashdetect = new function(){
     };
     /**
      * Is the version greater than or equal to a specified major, minor and revision.
-     * 
+     *
      * @param {Number} major The minimum required major version.
      * @param {Number} (Optional) minor The minimum required minor version.
      * @param {Number} (Optional) revision The minimum required revision version.
@@ -4209,7 +4209,7 @@ var flashdetect = new function(){
                 var versionObj = parseStandardVersion(version);
                 self.raw = versionObj.raw;
                 self.major = versionObj.major;
-                self.minor = versionObj.minor; 
+                self.minor = versionObj.minor;
                 self.revisionStr = versionObj.revisionStr;
                 self.revision = versionObj.revision;
                 self.installed = true;
@@ -4225,7 +4225,7 @@ var flashdetect = new function(){
                         var versionObj = parseActiveXVersion(version);
                         self.raw = versionObj.raw;
                         self.major = versionObj.major;
-                        self.minor = versionObj.minor; 
+                        self.minor = versionObj.minor;
                         self.revision = versionObj.revision;
                         self.revisionStr = versionObj.revisionStr;
                     }
@@ -4932,8 +4932,8 @@ var now = require('date-now');
  * Returns a function, that, as long as it continues to be invoked, will not
  * be triggered. The function will be called after it stops being called for
  * N milliseconds. If `immediate` is passed, trigger the function on the
- * leading edge, instead of the trailing. The function also has a property 'clear' 
- * that is a function which will clear the timer to prevent previously scheduled executions. 
+ * leading edge, instead of the trailing. The function also has a property 'clear'
+ * that is a function which will clear the timer to prevent previously scheduled executions.
  *
  * @source underscore.js
  * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
@@ -5004,7 +5004,7 @@ module.exports = function debounce(func, wait, immediate){
         root.store = factory();
   }
 }(this, function () {
-	
+
 	// Store.js
 	var store = {},
 		win = (typeof window != 'undefined' ? window : global),
@@ -5175,7 +5175,7 @@ module.exports = function debounce(func, wait, immediate){
 		store.disabled = true
 	}
 	store.enabled = !store.disabled
-	
+
 	return store
 }));
 
@@ -8186,7 +8186,7 @@ exports.clone = function() {
 
 /**
  * Focus the first dom element in our list.
- * 
+ *
  * @return {List} self
  * @api public
  */
@@ -8953,7 +8953,7 @@ module.exports = computed;
 function computed(el, prop, precomputed) {
   var computed = precomputed || styles(el);
   var ret;
-  
+
   if (!computed) return;
 
   if (computed.getPropertyValue) {

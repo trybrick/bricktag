@@ -504,7 +504,7 @@ class Plugin
     self = @
     networkId = self.getNetworkId()
     cb = (new Date()).getTime()
-    url = "<script src=\"http://ib.adnxs.com/ttj?id=#{networkId}&size=#{width}x#{height}&cb=#{cb}\"></script>";
+    url = "<script src=\"https://secure.adnxs.com/ttj?id=#{networkId}&size=#{width}x#{height}&cb=#{cb}\"></script>";
 
   createIframe: (parentEl) ->
     self = @
