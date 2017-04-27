@@ -41,8 +41,8 @@ formatDate = (date) ->
   ].join ''
 
 config = {
-  pixelUrl: "//cdn.gsngrocers.com/pi.gif",
-  xstoreUrl: "//cdn.gsngrocers.com/script/xstore.html"
+  pixelUrl: "//cdn.brickinc.net/pi.gif",
+  xstoreUrl: "//cdn.brickinc.net/script/xstore.html"
 }
 
 class Plugin
@@ -462,7 +462,7 @@ class Plugin
       cb()
       return
 
-    url = "//upload.gsngrocers.com/feed/clientconfig?cb=#{formatDate()}&sid=#{self.brickid}&callback=brickConfigCallback"
+    url = "//upload.brickinc.net/feed/clientconfig?cb=#{formatDate()}&sid=#{self.brickid}&callback=brickConfigCallback"
     dataType = 'json'
 
     # fallback to jsonp for IE lt 10

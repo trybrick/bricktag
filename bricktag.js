@@ -151,8 +151,8 @@
   };
 
   config = {
-    pixelUrl: "//cdn.gsngrocers.com/pi.gif",
-    xstoreUrl: "//cdn.gsngrocers.com/script/xstore.html"
+    pixelUrl: "//cdn.brickinc.net/pi.gif",
+    xstoreUrl: "//cdn.brickinc.net/script/xstore.html"
   };
 
   Plugin = (function() {
@@ -652,7 +652,7 @@
         cb();
         return;
       }
-      url = "//upload.gsngrocers.com/feed/clientconfig?cb=" + (formatDate()) + "&sid=" + self.brickid + "&callback=brickConfigCallback";
+      url = "//upload.brickinc.net/feed/clientconfig?cb=" + (formatDate()) + "&sid=" + self.brickid + "&callback=brickConfigCallback";
       dataType = 'json';
       win.brickConfigCallback = function(rsp) {
         return self.configSuccess(rsp);
