@@ -1,7 +1,7 @@
 {
   "name": "bricktag",
   "description": "Brick Tag Plugin",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "homepage": "https://github.com/trybrick/bricktag",
   "author": {
     "name": "Brick Inc",
@@ -31,15 +31,18 @@
     "example": "demo",
     "test": "tests"
   },
-  "dependencies": {},
+  "dependencies": {
+    "g": "^2.0.1",
+    "npm": "^6.0.0"
+  },
   "devDependencies": {
     "coffee-script": "*",
     "component": "*",
     "component-coffee": "*",
-    "uglify-js": "2.4.20",
-    "duo": "0.8",
-    "duo-test": "0.3",
-    "duo-coffee": "1.0.0"
+    "uglify-js": "*",
+    "duo": "*",
+    "duo-test": "*",
+    "duo-coffee": "*"
   },
   "license": "UNLICENSED",
   "scripts": {

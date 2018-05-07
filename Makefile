@@ -10,9 +10,9 @@ SRC = $(wildcard src/*.coffee)
 MINIFY = $(BINS)/uglifyjs
 PID = test/server/pid.txt
 BINS = node_modules/.bin
-BUILD = build.js
+BUILD = bricktag.js
 DUO = $(BINS)/duo
-DUOT = $(BINS)/duo-test -p test/server -R spec -P $(PORT) -c "make build.js"
+DUOT = $(BINS)/duo-test -p test/server -R spec -P $(PORT) -c "make bricktag.js"
 COFFEE = bin/coffee --js --bare
 
 #
