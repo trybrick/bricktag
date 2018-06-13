@@ -1,7 +1,7 @@
 {
   "name": "bricktag",
   "description": "Brick Tag Plugin",
-  "version": "0.2.6",
+  "version": "0.3.1",
   "homepage": "https://github.com/trybrick/bricktag",
   "author": {
     "name": "Brick Inc",
@@ -31,21 +31,30 @@
     "example": "demo",
     "test": "tests"
   },
-  "dependencies": {
-    "g": "^2.0.1",
-    "npm": "^6.0.0"
-  },
-  "devDependencies": {
-    "coffee-script": "*",
-    "component": "*",
-    "component-coffee": "*",
-    "uglify-js": "*",
-    "duo": "*",
-    "duo-test": "*",
-    "duo-coffee": "*"
-  },
   "license": "UNLICENSED",
   "scripts": {
-    "test": "gulp test"
+    "build": "webpack --env dev && webpack --env build && npm run test",
+    "dev": "webpack --progress --colors --watch --env dev",
+    "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
+    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.3",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
+    "debug": "github:visionmedia/debug",
+    "eslint": "^4.13.1",
+    "eslint-loader": "^1.9.0",
+    "gmodal": "github:niiknow/gmodal",
+    "mocha": "^4.0.1",
+    "trakless": "github:niiknow/trakless",
+    "webpack": "^3.10.0",
+    "wu": "github:niiknow/wu",
+    "yargs": "^10.0.3"
   }
 }
